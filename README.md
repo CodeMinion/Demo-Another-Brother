@@ -1,6 +1,6 @@
-# demoanotherbrother
+# Demo: Another Brother
 
-A new Flutter application.
+Simple demo app intended as a sample on how to use the Another-Brother Flutter SDK
 
 ## Getting Started
 
