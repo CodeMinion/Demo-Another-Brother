@@ -6,7 +6,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: c3a2a2e4fc3dadd6bb02cbbab641af3b6b704976
+      resolved-ref: b7f4cbafc7c29b5c2cedf8538d1ea96e38af90d1
       url: "git://github.com/CodeMinion/another_brother.git"
     source: git
     version: "0.0.1"
