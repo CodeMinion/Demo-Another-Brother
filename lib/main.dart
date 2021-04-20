@@ -412,6 +412,14 @@ class _WifiPrinterListPageState extends State<WifiPrinterListPage> {
       body: FutureBuilder(
         future: getMyNetworkPrinters(),
         builder: (buildContext, snapShot) {
+
+          if(snapShot.connectionState == ConnectionState.waiting) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Looking for printers."),
+            );
+          }
+
           if (snapShot.hasData) {
             // TODO Return a list
             List<NetPrinter> foundPrinters = snapShot.data;
@@ -444,7 +452,15 @@ class _WifiPrinterListPageState extends State<WifiPrinterListPage> {
           }
         },
       ),
-       // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+
+          });
+        },
+        tooltip: 'Retry',
+        child: Icon(Icons.refresh),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
