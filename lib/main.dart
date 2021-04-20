@@ -36,7 +36,9 @@ class MyApp extends StatelessWidget {
       home: PageView(children: [
         BleRjPrintPage(title: 'RJ-4250WB BLE Sample'),
         QlBluetoothPrintPage(title: 'QL-1110NWB Bluetooth Sample'),
-        WifiPrintPage(title: 'PJ-773 WiFi Sample')]),
+        WifiPrintPage(title: 'PJ-773 WiFi Sample'),
+        WifiPrinterListPage(title: "Sample WiFi List")
+      ]),
 
     );
   }
@@ -355,6 +357,94 @@ class _QlBluetoothPrintPageState extends State<QlBluetoothPrintPage> {
         tooltip: 'Print',
         child: Icon(Icons.print),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Future<ui.Image> loadImage(String assetPath) async {
+    final ByteData img = await rootBundle.load(assetPath);
+    final Completer<ui.Image> completer = new Completer();
+    ui.decodeImageFromList(new Uint8List.view(img.buffer), (ui.Image img) {
+      return completer.complete(img);
+    });
+    return completer.future;
+  }
+}
+
+
+class WifiPrinterListPage extends StatefulWidget {
+  WifiPrinterListPage({Key key, this.title}) : super(key: key);
+
+  // This widget is the home page of your application. It is stateful, meaning
+  // that it has a State object (defined below) that contains fields that affect
+  // how it looks.
+
+  // This class is the configuration for the state. It holds the values (in this
+  // case the title) provided by the parent (in this case the App widget) and
+  // used by the build method of the State. Fields in a Widget subclass are
+  // always marked "final".
+
+  final String title;
+
+  @override
+  _WifiPrinterListPageState createState() => _WifiPrinterListPageState();
+}
+
+class _WifiPrinterListPageState extends State<WifiPrinterListPage> {
+
+  Future<List<NetPrinter>>getMyNetworkPrinters() async {
+    Printer printer = new Printer();
+    PrinterInfo printInfo = new PrinterInfo();
+
+    await printer.setPrinterInfo(printInfo);
+    return printer.getNetPrinters([Model.QL_1110NWB.getName(), Model.PJ_773.getName()]);
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+
+   return Scaffold(
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
+      ),
+      body: FutureBuilder(
+        future: getMyNetworkPrinters(),
+        builder: (buildContext, snapShot) {
+          if (snapShot.hasData) {
+            // TODO Return a list
+            List<NetPrinter> foundPrinters = snapShot.data;
+
+            if (foundPrinters.isEmpty) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("No printers found."),
+              );
+            }
+
+            return ListView.builder(
+                itemCount: foundPrinters.length,
+                itemBuilder: (context, index) {
+              return Card(
+                child: ListTile(title:Text("Printer: ${foundPrinters[index].modelName}"),
+                subtitle: Text("IP: ${foundPrinters[index].ipAddress}"),
+                onTap: () {
+                  // TODO Do anything you want! Maybe print?
+                },
+                ),
+              );
+            });
+          }
+          else {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Looking for printers."),
+            );
+          }
+        },
+      ),
+       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
