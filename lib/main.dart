@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:another_brother/custom_paper.dart';
 import 'package:another_brother/label_info.dart';
 import 'package:another_brother/printer_info.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         BleRjPrintPage(title: 'RJ-4250WB BLE Sample'),
         QlBluetoothPrintPage(title: 'QL-1110NWB Bluetooth Sample'),
         WifiPrintPage(title: 'PJ-773 WiFi Sample'),
+        BleRjCustomPaperPrintPage(title: 'RJ-4250WB Bin Sample'),
         WifiPrinterListPage(title: "Sample WiFi List")
       ]),
 
@@ -236,6 +238,91 @@ class _BleRjPrintPageState extends State<BleRjPrintPage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Don't forget to grant permissions to your app in Settings.", textAlign: TextAlign.center,),
+            ),
+            Image(image: AssetImage('assets/brother_hack.png'))
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => print(context),
+        tooltip: 'Print',
+        child: Icon(Icons.print),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Future<ui.Image> loadImage(String assetPath) async {
+    final ByteData img = await rootBundle.load(assetPath);
+    final Completer<ui.Image> completer = new Completer();
+    ui.decodeImageFromList(new Uint8List.view(img.buffer), (ui.Image img) {
+      return completer.complete(img);
+    });
+    return completer.future;
+  }
+}
+
+class BleRjCustomPaperPrintPage extends StatefulWidget {
+  BleRjCustomPaperPrintPage({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _BleRjCustomPaperPrintPageState createState() => _BleRjCustomPaperPrintPageState();
+}
+
+class _BleRjCustomPaperPrintPageState extends State<BleRjCustomPaperPrintPage> {
+
+  bool _error = false;
+
+  void print(BuildContext context) async {
+
+    var printer = new Printer();
+    var printInfo = PrinterInfo();
+    printInfo.printerModel = Model.RJ_4250WB;
+    printInfo.printMode = PrintMode.FIT_TO_PAGE;
+    printInfo.isAutoCut = true;
+    printInfo.port = Port.BLE;
+    // Set the label bin file.
+    printInfo.binCustomPaper = BinPaper_RJ4250.RD_W4in;
+
+    // Set the printer info so we can use the SDK to get the printers.
+    await printer.setPrinterInfo(printInfo);
+
+    // Get a list of printers with my model available in the network.
+    List<BLEPrinter> printers = await printer.getBLEPrinters(3000);
+
+    if (printers.isEmpty) {
+      // Show a message if no printers are found.
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("No printers found on your network."),
+        ),
+      ));
+
+      return;
+    }
+    // Get the BT name from the first printer found.
+    printInfo.setLocalName(printers.single.localName);
+
+    printer.setPrinterInfo(printInfo);
+    printer.printImage(await loadImage('assets/brother_hack.png'));
+
+  }
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
