@@ -25,10 +25,11 @@ dependencies:
     sdk: flutter
 
   # Use Another_Brother directly from its git Repo
-  another_brother:
-    git:
-      url: git://github.com/CodeMinion/another_brother.git
+  #another_brother:
+  #  git:
+  #    url: git://github.com/CodeMinion/another_brother.git
 
+  another_brother: 0.0.25
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2

@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         QlBluetoothPrintPage(title: 'QL-1110NWB Bluetooth Sample'),
         WifiPrintPage(title: 'PJ-773 WiFi Sample'),
         BleRjCustomPaperPrintPage(title: 'RJ-4250WB Bin Sample'),
-        TypeBbluetoothPrintPage(title: 'RJ-2055WB BT Sample'),
+        TypeBbluetoothPrintPage(title: 'RJ-3035B BT Sample'),
         WifiPrinterListPage(title: "Sample WiFi List")
       ]),
 
