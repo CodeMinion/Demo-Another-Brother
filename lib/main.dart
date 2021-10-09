@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
 }
 
 class WifiPrintPage extends StatefulWidget {
-  WifiPrintPage({Key key, this.title}) : super(key: key);
+  WifiPrintPage({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -155,7 +155,7 @@ class _WifiPrintPageState extends State<WifiPrintPage> {
 
 
 class BleRjPrintPage extends StatefulWidget {
-  BleRjPrintPage({Key key, this.title}) : super(key: key);
+  BleRjPrintPage({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -270,7 +270,7 @@ class _BleRjPrintPageState extends State<BleRjPrintPage> {
 }
 
 class BleRjCustomPaperPrintPage extends StatefulWidget {
-  BleRjCustomPaperPrintPage({Key key, this.title}) : super(key: key);
+  BleRjCustomPaperPrintPage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -355,7 +355,7 @@ class _BleRjCustomPaperPrintPageState extends State<BleRjCustomPaperPrintPage> {
 }
 
 class QlBluetoothPrintPage extends StatefulWidget {
-  QlBluetoothPrintPage({Key key, this.title}) : super(key: key);
+  QlBluetoothPrintPage({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -460,7 +460,7 @@ class _QlBluetoothPrintPageState extends State<QlBluetoothPrintPage> {
 }
 
 class TypeBbluetoothPrintPage extends StatefulWidget {
-  TypeBbluetoothPrintPage({Key key, this.title}) : super(key: key);
+  TypeBbluetoothPrintPage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -476,14 +476,14 @@ class _TypeBbluetoothPrintPageState extends State<TypeBbluetoothPrintPage> {
 
     var printer = new TbPrinter();
     var printInfo = TbPrinterInfo();
-    printInfo.printerModel = TbModel.RJ_2055WB;
+    printInfo.printerModel = TbModel.RJ_3035B;
     printInfo.port = Port.BLUETOOTH;
 
     // Set the printer info so we can use the SDK to get the printers.
     await printer.setPrinterInfo(printInfo);
 
     // Get a list of printers with my model available in the network.
-    List<BluetoothPrinter> printers = await printer.getBluetoothPrinters([TbModel.RJ_2055WB.getName()]);
+    List<BluetoothPrinter> printers = await printer.getBluetoothPrinters([TbModel.RJ_3035B.getName()]);
 
     if (printers.isEmpty) {
       // Show a message if no printers are found.
@@ -564,7 +564,7 @@ class _TypeBbluetoothPrintPageState extends State<TypeBbluetoothPrintPage> {
 }
 
 class WifiPrinterListPage extends StatefulWidget {
-  WifiPrinterListPage({Key key, this.title}) : super(key: key);
+  WifiPrinterListPage({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -603,7 +603,7 @@ class _WifiPrinterListPageState extends State<WifiPrinterListPage> {
       ),
       body: FutureBuilder(
         future: getMyNetworkPrinters(),
-        builder: (buildContext, snapShot) {
+        builder: (buildContext, AsyncSnapshot<List<NetPrinter>>snapShot) {
 
           if(snapShot.connectionState == ConnectionState.waiting) {
             return Padding(
@@ -614,7 +614,7 @@ class _WifiPrinterListPageState extends State<WifiPrinterListPage> {
 
           if (snapShot.hasData) {
             // TODO Return a list
-            List<NetPrinter> foundPrinters = snapShot.data;
+            List<NetPrinter> foundPrinters = snapShot.data!;
 
             if (foundPrinters.isEmpty) {
               return Padding(
